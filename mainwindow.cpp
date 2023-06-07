@@ -8,12 +8,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     SetupTable();
 
     //Connect Signals and Slots
+    connect(ui->buttonNew, &QToolButton::clicked, this, On_ButtonNew_Clicked);
     connect(ui->buttonOpen, &QToolButton::clicked, this, On_ButtonOpen_Clicked);
 
     ui->progressBar->hide();
     ui->lineInfo->setText("");
-
-    ui->tableWidget->setSortingEnabled(true);
 }
 
 MainWindow::~MainWindow(){
@@ -166,6 +165,12 @@ QString MainWindow::HeaderText(int index){
     default:
         return QString();
     }
+}
+
+void MainWindow::On_ButtonNew_Clicked(){
+    ui->tableWidget->setRowCount(0);
+    ui->tableWidget->setColumnCount(0);
+    SetupTable();
 }
 
 void MainWindow::On_ButtonOpen_Clicked(){

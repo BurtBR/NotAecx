@@ -34,6 +34,7 @@ private:
     QString HeaderText(int index);
 
 private slots:
+    void On_ButtonNew_Clicked();
     void On_ButtonOpen_Clicked();
     void UpdateProgressBar(uint8_t value);
     void DisplayInfo(QString text);
