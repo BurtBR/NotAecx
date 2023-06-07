@@ -4,82 +4,37 @@ WorkerImportXML::WorkerImportXML(QObject *parent) : QObject{parent}{
 
 }
 
-QString WorkerImportXML::FindAttribute(QXmlStreamReader &reader, QString tokenname, int attributeid){
+QString WorkerImportXML::FindAttribute(QDomDocument &xmlDoc, QString tokenname, QString attribute){
+    return xmlDoc.elementsByTagName(tokenname).at(0).attributes().namedItem(attribute).nodeValue();
+}
 
-    while(!reader.atEnd()){
+QString WorkerImportXML::FindNextValue(QString tokenname, QDomElement node){
 
-        if(reader.readNext() == QXmlStreamReader::TokenType::StartElement){
+    QDomElement childtoken = FindToken(tokenname, node);
 
-            if(!QString::compare(reader.name(), tokenname)){
-
-                if(reader.attributes().size()){
-                    return reader.attributes().at(attributeid).value().toString();
-                }else{
-                    return QString();
-                }
-            }
-        }
+    if(childtoken.hasChildNodes()){
+        return childtoken.childNodes().at(0).nodeValue();
     }
 
     return QString();
 }
 
-QString WorkerImportXML::FindNextValue(QXmlStreamReader &reader, QString tokenname){
-
-    QString value;
-
-    while(!reader.atEnd()){
-
-        if(reader.readNext() == QXmlStreamReader::TokenType::StartElement){
-            if(!QString::compare(reader.name(), tokenname)){
-                reader.readNext();
-                value = reader.text().toString();
-                reader.readNext();
-                return value;
-            }
-        }
-    }
-
-    return value;
-}
-
-QString WorkerImportXML::NextValue(QXmlStreamReader &reader){
-
-    QString value;
-
-    if(!reader.atEnd()){
-        reader.readNext();
-        reader.readNext();
-        value = reader.text().toString();
-        reader.readNext();
-    }
-
-    return value;
-}
-
-bool WorkerImportXML::FindToken(QXmlStreamReader &reader, QString tokenname){
-
-
-    while(!reader.atEnd()){
-
-        if(reader.readNext() == QXmlStreamReader::TokenType::StartElement){
-            if(!QString::compare(reader.name(), tokenname))
-                return true;
-        }
-    }
-
-    return false;
+QDomElement WorkerImportXML::FindToken(QString tokenname, QDomElement node){
+    return node.elementsByTagName(tokenname).at(0).toElement();
 }
 
 void WorkerImportXML::ImportXMLs(QStringList filelist, QAbstractItemModel *tablemodel){
 
     int rowcount = tablemodel->rowCount(), columncount=1;
+    int filecount = 0;
     QString nfeID;
 
-    for(int filecount = 0; filecount < filelist.size() ;filecount++){
+    for(filecount = 0; filecount < filelist.size() ;filecount++){
 
         QFile fp(filelist[filecount]);
-        QXmlStreamReader reader(&fp);
+        QDomDocument xmlfile("XMLfile");
+        QDomNodeList items;
+        QDomElement element, subelement;
 
         if(!fp.open(QIODevice::ReadOnly | QIODevice::Text)){
             emit DisplayInfo("Failed to open file!!!");
@@ -87,49 +42,62 @@ void WorkerImportXML::ImportXMLs(QStringList filelist, QAbstractItemModel *table
             return;
         }
 
-        nfeID = FindAttribute(reader, "infNFe", 0);
+        xmlfile.setContent(&fp);
+        fp.close();
 
-        while(FindToken(reader, "prod")){
+        nfeID = FindAttribute(xmlfile, "infNFe", "Id");
+
+        items = xmlfile.elementsByTagName("det");
+
+        for(int i=0; i<items.size() ;i++){
 
             tablemodel->insertRow(rowcount++);
             columncount = 0;
 
             tablemodel->setData(tablemodel->index(rowcount-1, columncount++), nfeID);
 
-            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue(reader, "cProd"));
-            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue(reader, "cEAN"));
-            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue(reader, "xProd"));
-            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue(reader, "NCM"));
-            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue(reader, "CFOP"));
-            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue(reader, "uCom"));
-            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue(reader, "qCom"));
-            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue(reader, "vUnCom"));
-            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue(reader, "vProd"));
-            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue(reader, "cEANTrib"));
-            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue(reader, "uTrib"));
-            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue(reader, "qTrib"));
-            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue(reader, "vUnTrib"));
-            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue(reader, "indTot"));
-            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue(reader, "vTotTrib"));
-            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue(reader, "orig"));
-            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue(reader, "CSOSN"));
-            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue(reader, "vBCSTRet"));
-            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue(reader, "pST"));
-            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue(reader, "vICMSSTRet"));
-            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue(reader, "CST"));
-            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue(reader, "vBC"));
-            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue(reader, "pPIS"));
-            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue(reader, "vPIS"));
-            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue(reader, "CST"));
-            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue(reader, "vBC"));
-            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue(reader, "pCOFINS"));
-            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue(reader, "vCOFINS"));
-        }
-        fp.close();
+            element = FindToken("prod", items.at(i).toElement());
 
+            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue("cProd", element));
+            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue("cEAN", element));
+            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue("xProd", element));
+            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue("NCM", element));
+            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue("CFOP", element));
+            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue("uCom", element));
+            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue("qCom", element));
+            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue("vUnCom", element));
+            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue("vProd", element));
+            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue("cEANTrib", element));
+            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue("uTrib", element));
+            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue("qTrib", element));
+            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue("vUnTrib", element));
+            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue("indTot", element));
+
+            element = FindToken("imposto", items.at(i).toElement());
+            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue("vTotTrib", element));
+
+            subelement = FindToken("ICMS", element);
+            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue("orig", subelement));
+            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue("CSOSN", subelement));
+            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue("vBCSTRet", subelement));
+            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue("pST", subelement));
+            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue("vICMSSTRet", subelement));
+
+            subelement = FindToken("PIS", element);
+            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue("CST", subelement));
+            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue("vBC", subelement));
+            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue("pPIS", subelement));
+            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue("vPIS", subelement));
+
+            subelement = FindToken("COFINS", element);
+            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue("CST", subelement));
+            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue("vBC", subelement));
+            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue("pCOFINS", subelement));
+            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue("vCOFINS", subelement));
+        }
         emit UpdateProgressBar(((filecount+1)*100.0)/filelist.size());
     }
 
-    emit DisplayInfo("Import Complete!");
+    emit DisplayInfo("Import Complete! " + QString::number(filecount) + " Files");
     emit WorkerFinished(0);
 }

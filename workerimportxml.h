@@ -2,6 +2,7 @@
 #define WORKERIMPORTXML_H
 
 #include <QObject>
+#include <QDomDocument>
 #include <QXmlStreamReader>
 #include <QAbstractItemModel>
 #include <QFile>
@@ -16,10 +17,9 @@ class WorkerImportXML : public QObject{
 private:
 
     //Private Methods
-    QString FindAttribute(QXmlStreamReader &reader, QString tokenname, int attributeid);
-    QString FindNextValue(QXmlStreamReader &reader, QString tokenname);
-    QString NextValue(QXmlStreamReader &reader);
-    bool FindToken(QXmlStreamReader &reader, QString tokenname);
+    QString FindAttribute(QDomDocument &xmlDoc, QString tokenname, QString attribute);
+    QString FindNextValue(QString tokenname, QDomElement node);
+    QDomElement FindToken(QString tokenname, QDomElement node);
 
 public:
     WorkerImportXML(QObject *parent = nullptr);

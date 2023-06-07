@@ -204,15 +204,15 @@ QString MainWindow::HeaderText(int index){
     case 15:
         return "vTotTrib";
     case 16:
-        return "ICMSSN500/orig";
+        return "ICMSSN/orig";
     case 17:
-        return "ICMSSN500/CSOSN";
+        return "ICMSSN/CSOSN";
     case 18:
-        return "ICMSSN500/vBCSTRet";
+        return "ICMSSN/vBCSTRet";
     case 19:
-        return "ICMSSN500/pST";
+        return "ICMSSN/pST";
     case 20:
-        return "ICMSSN500/vICMSSTRet";
+        return "ICMSSN/vICMSSTRet";
     case 21:
         return "PISOutr/CST";
     case 22:
