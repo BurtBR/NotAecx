@@ -33,11 +33,11 @@ This program imports data about items from a very specific type of xml and enabl
   -	vUnTrib
   -	indTot
   -	vTotTrib
-  -	ICMSSN500/orig
-  -	ICMSSN500/CSOSN
-  -	ICMSSN500/vBCSTRet
-  -	ICMSSN500/pST
-  -	ICMSSN500/vICMSSTRet
+  -	ICMSSN/orig
+  -	ICMSSN/CSOSN
+  -	ICMSSN/vBCSTRet
+  -	ICMSSN/pST
+  -	ICMSSN/vICMSSTRet
   -	PISOutr/CST
   -	PISOutr/vBC
   -	PISOutr/pPIS
