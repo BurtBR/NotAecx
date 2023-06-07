@@ -97,26 +97,33 @@ void WorkerImportXML::ImportXMLs(QStringList filelist, QAbstractItemModel *table
             tablemodel->setData(tablemodel->index(rowcount-1, columncount++), nfeID);
 
             tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue(reader, "cProd"));
-            for(int i=0; i<13 ;i++){
-                tablemodel->setData(tablemodel->index(rowcount-1, columncount++), NextValue(reader));
-            }
-
+            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue(reader, "cEAN"));
+            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue(reader, "xProd"));
+            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue(reader, "NCM"));
+            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue(reader, "CFOP"));
+            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue(reader, "uCom"));
+            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue(reader, "qCom"));
+            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue(reader, "vUnCom"));
+            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue(reader, "vProd"));
+            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue(reader, "cEANTrib"));
+            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue(reader, "uTrib"));
+            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue(reader, "qTrib"));
+            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue(reader, "vUnTrib"));
+            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue(reader, "indTot"));
             tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue(reader, "vTotTrib"));
-
             tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue(reader, "orig"));
-            for(int i=0; i<4 ;i++){
-                tablemodel->setData(tablemodel->index(rowcount-1, columncount++), NextValue(reader));
-            }
-
+            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue(reader, "CSOSN"));
+            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue(reader, "vBCSTRet"));
+            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue(reader, "pST"));
+            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue(reader, "vICMSSTRet"));
             tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue(reader, "CST"));
-            for(int i=0; i<3 ;i++){
-                tablemodel->setData(tablemodel->index(rowcount-1, columncount++), NextValue(reader));
-            }
-
+            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue(reader, "vBC"));
+            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue(reader, "pPIS"));
+            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue(reader, "vPIS"));
             tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue(reader, "CST"));
-            for(int i=0; i<3 ;i++){
-                tablemodel->setData(tablemodel->index(rowcount-1, columncount++), NextValue(reader));
-            }
+            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue(reader, "vBC"));
+            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue(reader, "pCOFINS"));
+            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue(reader, "vCOFINS"));
         }
         fp.close();
 
