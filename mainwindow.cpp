@@ -11,131 +11,94 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(ui->buttonOpen, &QToolButton::clicked, this, On_ButtonOpen_Clicked);
 
     ui->progressBar->hide();
-    ui->lineInfo->hide();
+    ui->lineInfo->setText("");
+
+    ui->tableWidget->setSortingEnabled(true);
 }
 
 MainWindow::~MainWindow(){
+
+    KillThreads();
     delete ui;
+}
+
+void MainWindow::KillThreads(){
+    if(threadWork){
+        threadWork->quit();
+        while(!threadWork->wait());
+        delete threadWork;
+        threadWork = nullptr;
+    }
 }
 
 void MainWindow::SetupTable(){
 
-    QAbstractItemModel *modelaux = ui->tableWidget->model();
+    QStringList headerlist;
 
     ui->tableWidget->setColumnCount(29);
-    ui->tableWidget->setRowCount(1);
 
     for(int i=0; i<ui->tableWidget->columnCount() ;i++){
-        modelaux->setData(modelaux->index(0, i), HeaderText(i));
-        modelaux->setData(modelaux->index(0, i), Qt::AlignCenter, Qt::TextAlignmentRole);
-        modelaux->setData(modelaux->index(0, i), QFont("Source Code Pro", 15, QFont::Bold), Qt::FontRole);
+        headerlist.append(HeaderText(i));
     }
+
+    ui->tableWidget->setHorizontalHeaderLabels(headerlist);
 
     ui->tableWidget->resizeColumnsToContents();
 
     ui->tableWidget->setColumnWidth(0, 440);
-    ui->tableWidget->setColumnWidth(3, 500);
+    ui->tableWidget->setColumnWidth(1, 130);
+    ui->tableWidget->setColumnWidth(2, 130);
+    ui->tableWidget->setColumnWidth(3, 450);
     ui->tableWidget->setColumnWidth(4, 100);
     ui->tableWidget->setColumnWidth(7, 100);
     ui->tableWidget->setColumnWidth(8, 100);
-
-    //ui->tableWidget->setWordWrap(true);
 }
 
 void MainWindow::OpenFiles(){
 
-    QStringList filepath = QFileDialog::getOpenFileNames(this, "Abrir Arquivo", "", "XML Files (*.xml)");
-    QAbstractItemModel *modelaux = ui->tableWidget->model();
-    int rowcount = ui->tableWidget->rowCount(), columncount=1;
-    QString nfeID;
+    if(isBusy){
+        DisplayInfo("Execution in progress! Wait for it to finish...");
+        return;
+    }
 
-    ui->progressBar->show();
-    ui->lineInfo->show();
+    QStringList filepath = QFileDialog::getOpenFileNames(this, "Open File", "", "XML Files (*.xml)");
+    WorkerImportXML *worker;
 
-    for(int filecnt = 0; filecnt<filepath.size() ;filecnt++){
+    if(filepath.size()){
 
-        QFile fp(filepath[filecnt]);
-
-        if(!fp.open(QIODevice::ReadOnly | QIODevice::Text))
+        try{
+            worker = new WorkerImportXML;
+        }catch(...){
+            DisplayInfo("Failed to allocate memory for thread worker");
             return;
-
-        QXmlStreamReader reader(&fp);
-
-        nfeID.clear();
-
-        while(!nfeID.size()){
-            reader.readNext();
-            if(reader.attributes().size()){
-                if(!QString::compare(reader.attributes().at(0).name().toString(), "Id"))
-                    nfeID = reader.attributes().at(0).value().toString();
-            }
         }
 
-        while(!reader.atEnd()){
-
-            reader.readNext();
-
-            if(!QString::compare(reader.name(), "det")){
-
-                ui->tableWidget->insertRow(rowcount++);
-                columncount = 1;
-
-                modelaux->setData(modelaux->index(rowcount-1, 0), nfeID);
-                reader.readNext();
-                for(int i=0; i<14; columncount++, i++){
-                    reader.readNext();
-                    reader.readNext();
-                    modelaux->setData(modelaux->index(rowcount-1, i+1), reader.text().toString());
-                    reader.readNext();
-                }
-
-                reader.readNext();
-                reader.readNext();
-                reader.readNext();
-                reader.readNext();
-                modelaux->setData(modelaux->index(rowcount-1, columncount++), reader.text().toString());
-                reader.readNext();
-
-                reader.readNext();
-                reader.readNext();
-
-                for(int i=0; i<5 ;columncount++, i++){
-                    reader.readNext();
-                    reader.readNext();
-                    modelaux->setData(modelaux->index(rowcount-1, columncount), reader.text().toString());
-                    reader.readNext();
-                }
-
-                reader.readNext();
-                reader.readNext();
-                reader.readNext();
-                reader.readNext();
-
-                for(int i=0; i<4 ;columncount++, i++){
-                    reader.readNext();
-                    reader.readNext();
-                    modelaux->setData(modelaux->index(rowcount-1, columncount), reader.text().toString());
-                    reader.readNext();
-                }
-
-                reader.readNext();
-                reader.readNext();
-                reader.readNext();
-                reader.readNext();
-
-                for(int i=0; i<4 ;columncount++, i++){
-                    reader.readNext();
-                    reader.readNext();
-                    modelaux->setData(modelaux->index(rowcount-1, columncount), reader.text().toString());
-                    reader.readNext();
-                }
-
-                while(QString::compare(reader.name(), "det"))
-                    reader.readNext();
-            }
+        try{
+            threadWork = new QThread(this);
+        }catch(...){
+            DisplayInfo("Failed to allocate memory for thread");
+            delete worker;
+            worker = nullptr;
+            return;
         }
 
-        fp.close();
+        isBusy = true;
+        this->setDisabled(true);
+
+        connect(worker, &WorkerImportXML::WorkerFinished, this, WorkerFinished);
+        connect(worker, &WorkerImportXML::UpdateProgressBar, this, UpdateProgressBar);
+        connect(worker, &WorkerImportXML::DisplayInfo, this, DisplayInfo);
+        connect(this, ImportXMLs, worker, &WorkerImportXML::ImportXMLs);
+        connect(threadWork, &QThread::finished, worker, &WorkerImportXML::deleteLater);
+
+        worker->moveToThread(threadWork);
+        threadWork->start();
+
+        ui->progressBar->setValue(0);
+        ui->progressBar->show();
+        DisplayInfo("Importing...");
+
+        emit ImportXMLs(filepath, ui->tableWidget->model());
     }
 }
 
@@ -145,17 +108,17 @@ QString MainWindow::HeaderText(int index){
     case 0:
         return "NFe";
     case 1:
-        return "Código do Prod.";
+        return "cProd";
     case 2:
-        return "Código EAN";
+        return "cEAN";
     case 3:
-        return "Descrição";
+        return "xProd";
     case 4:
         return "NCM";
     case 5:
         return "CFOP";
     case 6:
-        return "Unidade";
+        return "uCom";
     case 7:
         return "qCom";
     case 8:
@@ -163,17 +126,17 @@ QString MainWindow::HeaderText(int index){
     case 9:
         return "vProd";
     case 10:
-        return "EAN Trib.";
+        return "cEANTrib";
     case 11:
-        return "Un. Trib.";
+        return "uTrib";
     case 12:
-        return "Qtd. Trib.";
+        return "qTrib";
     case 13:
-        return "Valor Un. do Trib.";
+        return "vUnTrib";
     case 14:
         return "indTot";
     case 15:
-        return "Total de Trib.";
+        return "vTotTrib";
     case 16:
         return "ICMSSN500/orig";
     case 17:
@@ -207,4 +170,23 @@ QString MainWindow::HeaderText(int index){
 
 void MainWindow::On_ButtonOpen_Clicked(){
     OpenFiles();
+}
+
+void MainWindow::UpdateProgressBar(uint8_t value){
+    if(value <= 100)
+        ui->progressBar->setValue(value);
+}
+
+void MainWindow::DisplayInfo(QString text){
+    ui->lineInfo->setText(text);
+    ui->lineInfo->show();
+    return;
+}
+
+void MainWindow::WorkerFinished(uint8_t){
+
+    KillThreads();
+    isBusy = false;
+    this->setEnabled(true);
+    ui->progressBar->hide();
 }

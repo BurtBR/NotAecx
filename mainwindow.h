@@ -3,9 +3,11 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QXmlStreamReader>
+#include <QAbstractItemModel>
 #include <QFileDialog>
-#include <QFile>
+#include <QThread>
+
+#include "workerimportxml.h"
 
 //------TEMPORARIO------
 #include <QDebug>
@@ -21,19 +23,28 @@ class MainWindow : public QMainWindow{
 
 private:
     //Provate Attributes
+    bool isBusy = false;
     Ui::MainWindow *ui;
+    QThread *threadWork = nullptr;
 
     //Private Functions
+    void KillThreads();
     void SetupTable();
     void OpenFiles();
     QString HeaderText(int index);
 
 private slots:
     void On_ButtonOpen_Clicked();
+    void UpdateProgressBar(uint8_t value);
+    void DisplayInfo(QString text);
+    void WorkerFinished(uint8_t id);
 
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+
+signals:
+    void ImportXMLs(QStringList, QAbstractItemModel*);
 };
 
 #endif // MAINWINDOW_H

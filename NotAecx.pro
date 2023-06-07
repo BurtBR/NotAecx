@@ -13,10 +13,12 @@ win32:RC_ICONS += SoftwareIcon.ico
 
 SOURCES += \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    workerimportxml.cpp
 
 HEADERS += \
-    mainwindow.h
+    mainwindow.h \
+    workerimportxml.h
 
 FORMS += \
     mainwindow.ui
