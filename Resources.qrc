@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Images/ProgramLogo.png</file>
+        <file>Background/Background.png</file>
+        <file>Images/New.png</file>
+        <file>Images/Open.png</file>
+        <file>Images/Save.png</file>
+        <file>Images/SaveAs.png</file>
+    </qresource>
+</RCC>
