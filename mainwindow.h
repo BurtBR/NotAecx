@@ -8,6 +8,7 @@
 #include <QThread>
 
 #include "workerimportxml.h"
+#include "workerexportcsv.h"
 
 //------TEMPORARIO------
 #include <QDebug>
@@ -26,16 +27,22 @@ private:
     bool isBusy = false;
     Ui::MainWindow *ui;
     QThread *threadWork = nullptr;
+    QString lastsavedfile;
 
     //Private Functions
     void KillThreads();
     void SetupTable();
     void OpenFiles();
+    void Save();
+    void SaveAs();
+    bool StartExportWorker();
     QString HeaderText(int index);
 
 private slots:
     void On_ButtonNew_Clicked();
     void On_ButtonOpen_Clicked();
+    void On_ButtonSave_Clicked();
+    void On_ButtonSaveAs_Clicked();
     void UpdateProgressBar(uint8_t value);
     void DisplayInfo(QString text);
     void WorkerFinished(uint8_t id);
@@ -46,6 +53,7 @@ public:
 
 signals:
     void ImportXMLs(QStringList, QAbstractItemModel*);
+    void ExportCSV(QString, QAbstractItemModel*);
 };
 
 #endif // MAINWINDOW_H

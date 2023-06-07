@@ -10,6 +10,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     //Connect Signals and Slots
     connect(ui->buttonNew, &QToolButton::clicked, this, On_ButtonNew_Clicked);
     connect(ui->buttonOpen, &QToolButton::clicked, this, On_ButtonOpen_Clicked);
+    connect(ui->buttonSave, &QToolButton::clicked, this, On_ButtonSave_Clicked);
+    connect(ui->buttonSaveAs, &QToolButton::clicked, this, On_ButtonSaveAs_Clicked);
 
     ui->progressBar->hide();
     ui->lineInfo->setText("");
@@ -101,6 +103,71 @@ void MainWindow::OpenFiles(){
     }
 }
 
+void MainWindow::Save(){
+
+    if(!lastsavedfile.size())
+        return SaveAs();
+
+    if(!StartExportWorker())
+        return;
+
+    emit ExportCSV(lastsavedfile, ui->tableWidget->model());
+}
+
+void MainWindow::SaveAs(){
+
+    QString filepath = QFileDialog::getSaveFileName(this, "Save File", "", "CSV Files (*.csv)");
+
+    if(filepath.size()){
+        if(!StartExportWorker())
+            return;
+
+        lastsavedfile = filepath;
+        emit ExportCSV(filepath, ui->tableWidget->model());
+    }
+}
+
+bool MainWindow::StartExportWorker(){
+
+    if(isBusy){
+        DisplayInfo("Execution in progress! Wait for it to finish...");
+        return false;
+    }
+
+    WorkerExportCSV *worker;
+
+    try{
+        worker = new WorkerExportCSV;
+    }catch(...){
+        DisplayInfo("Failed to allocate memory for thread worker");
+        return false;
+    }
+
+    try{
+        threadWork = new QThread(this);
+    }catch(...){
+        DisplayInfo("Failed to allocate memory for thread");
+        delete worker;
+        worker = nullptr;
+        return false;
+    }
+
+    isBusy = true;
+    this->setDisabled(true);
+
+    connect(worker, &WorkerExportCSV::WorkerFinished, this, WorkerFinished);
+    connect(worker, &WorkerExportCSV::UpdateProgressBar, this, UpdateProgressBar);
+    connect(worker, &WorkerExportCSV::DisplayInfo, this, DisplayInfo);
+    connect(this, ExportCSV, worker, &WorkerExportCSV::ExportCSV);
+    connect(threadWork, &QThread::finished, worker, &WorkerExportCSV::deleteLater);
+
+    ui->progressBar->setValue(0);
+    ui->progressBar->show();
+    DisplayInfo("Exporting...");
+
+    return true;
+}
+
 QString MainWindow::HeaderText(int index){
 
     switch(index){
@@ -168,6 +235,7 @@ QString MainWindow::HeaderText(int index){
 }
 
 void MainWindow::On_ButtonNew_Clicked(){
+    lastsavedfile.clear();
     ui->tableWidget->setRowCount(0);
     ui->tableWidget->setColumnCount(0);
     SetupTable();
@@ -175,6 +243,14 @@ void MainWindow::On_ButtonNew_Clicked(){
 
 void MainWindow::On_ButtonOpen_Clicked(){
     OpenFiles();
+}
+
+void MainWindow::On_ButtonSave_Clicked(){
+    Save();
+}
+
+void MainWindow::On_ButtonSaveAs_Clicked(){
+    SaveAs();
 }
 
 void MainWindow::UpdateProgressBar(uint8_t value){

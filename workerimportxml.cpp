@@ -82,7 +82,7 @@ void WorkerImportXML::ImportXMLs(QStringList filelist, QAbstractItemModel *table
         QXmlStreamReader reader(&fp);
 
         if(!fp.open(QIODevice::ReadOnly | QIODevice::Text)){
-            emit DisplayInfo("Fail to open file!!!");
+            emit DisplayInfo("Failed to open file!!!");
             emit WorkerFinished(0);
             return;
         }

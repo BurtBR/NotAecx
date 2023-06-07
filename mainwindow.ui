@@ -82,6 +82,15 @@ QTableWidget{
           <height>0</height>
          </size>
         </property>
+        <property name="toolTip">
+         <string>Ctrl + N</string>
+        </property>
+        <property name="statusTip">
+         <string/>
+        </property>
+        <property name="whatsThis">
+         <string>Ctrl + N</string>
+        </property>
         <property name="text">
          <string>New</string>
         </property>
@@ -94,6 +103,9 @@ QTableWidget{
           <width>70</width>
           <height>70</height>
          </size>
+        </property>
+        <property name="shortcut">
+         <string>Ctrl+N</string>
         </property>
         <property name="toolButtonStyle">
          <enum>Qt::ToolButtonTextUnderIcon</enum>
@@ -120,6 +132,9 @@ QTableWidget{
           <height>110</height>
          </size>
         </property>
+        <property name="toolTip">
+         <string>Ctrl + O</string>
+        </property>
         <property name="text">
          <string>Open</string>
         </property>
@@ -132,6 +147,9 @@ QTableWidget{
           <width>70</width>
           <height>70</height>
          </size>
+        </property>
+        <property name="shortcut">
+         <string>Ctrl+O</string>
         </property>
         <property name="toolButtonStyle">
          <enum>Qt::ToolButtonTextUnderIcon</enum>
@@ -158,6 +176,9 @@ QTableWidget{
           <height>110</height>
          </size>
         </property>
+        <property name="toolTip">
+         <string>Ctrl + S</string>
+        </property>
         <property name="text">
          <string>Save</string>
         </property>
@@ -170,6 +191,9 @@ QTableWidget{
           <width>70</width>
           <height>70</height>
          </size>
+        </property>
+        <property name="shortcut">
+         <string>Ctrl+S</string>
         </property>
         <property name="toolButtonStyle">
          <enum>Qt::ToolButtonTextUnderIcon</enum>
@@ -202,6 +226,9 @@ QTableWidget{
           <height>0</height>
          </size>
         </property>
+        <property name="toolTip">
+         <string>Ctrl + Alt + S</string>
+        </property>
         <property name="text">
          <string>Save As</string>
         </property>
@@ -214,6 +241,9 @@ QTableWidget{
           <width>70</width>
           <height>70</height>
          </size>
+        </property>
+        <property name="shortcut">
+         <string>Ctrl+Alt+S</string>
         </property>
         <property name="toolButtonStyle">
          <enum>Qt::ToolButtonTextUnderIcon</enum>
@@ -239,6 +269,12 @@ QTableWidget{
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
        <widget class="QTableWidget" name="tableWidget">
+        <property name="toolTip">
+         <string/>
+        </property>
+        <property name="toolTipDuration">
+         <number>-1</number>
+        </property>
         <property name="sortingEnabled">
          <bool>true</bool>
         </property>

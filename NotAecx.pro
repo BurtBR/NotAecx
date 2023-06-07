@@ -14,10 +14,12 @@ win32:RC_ICONS += SoftwareIcon.ico
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
+    workerexportcsv.cpp \
     workerimportxml.cpp
 
 HEADERS += \
     mainwindow.h \
+    workerexportcsv.h \
     workerimportxml.h
 
 FORMS += \
