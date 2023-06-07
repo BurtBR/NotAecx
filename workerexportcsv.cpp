@@ -31,7 +31,7 @@ void WorkerExportCSV::ExportCSV(QString filename, QAbstractItemModel *tablemodel
 
         out << tablemodel->data(tablemodel->index(i,0)).toString();
         for(int j=1; j<tablemodel->columnCount() ;j++)
-            out << "," << tablemodel->data(tablemodel->index(i,j)).toString().remove(',');
+            out << "," << tablemodel->data(tablemodel->index(i,j)).toString().remove(',').remove(';');
         out << "\n";
     }
 

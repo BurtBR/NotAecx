@@ -3,7 +3,6 @@
 
 #include <QObject>
 #include <QDomDocument>
-#include <QXmlStreamReader>
 #include <QAbstractItemModel>
 #include <QFile>
 
