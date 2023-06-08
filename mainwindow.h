@@ -24,7 +24,7 @@ class MainWindow : public QMainWindow{
 
 private:
     //Provate Attributes
-    bool isBusy = false;
+    bool isBusy = false, tablesorting = false;
     Ui::MainWindow *ui;
     QThread *threadWork = nullptr;
     QString lastsavedfile;
