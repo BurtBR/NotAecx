@@ -80,7 +80,7 @@ void WorkerImportXML::ImportXMLs(QStringList filelist, QAbstractItemModel *table
             tablemodel->insertRow(rowcount++);
             columncount = 0;
 
-            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), nfedata[0]);
+            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), nfedata.at(0));
 
             element = FindToken("prod", items.at(i).toElement());
 
