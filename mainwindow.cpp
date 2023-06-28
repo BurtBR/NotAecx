@@ -36,7 +36,7 @@ void MainWindow::SetupTable(){
 
     QStringList headerlist;
 
-    ui->tableWidget->setColumnCount(29);
+    ui->tableWidget->setColumnCount(52);
 
     for(int i=0; i<ui->tableWidget->columnCount() ;i++){
         headerlist.append(HeaderText(i));
@@ -231,6 +231,52 @@ QString MainWindow::HeaderText(int index){
         return "COFINSOutr/pCOFINS";
     case 28:
         return "COFINSOutr/vCOFINS";
+    case 29:
+        return "ICMSTot/vBC";
+    case 30:
+        return "ICMSTot/vICMS";
+    case 31:
+        return "ICMSTot/vICMSDeson";
+    case 32:
+        return "ICMSTot/vFCPUFDest";
+    case 33:
+        return "ICMSTot/vICMSUFDest";
+    case 34:
+        return "ICMSTot/vICMSUFRemet";
+    case 35:
+        return "ICMSTot/vFCP";
+    case 36:
+        return "ICMSTot/vBCST";
+    case 37:
+        return "ICMSTot/vST";
+    case 38:
+        return "ICMSTot/vFCPST";
+    case 39:
+        return "ICMSTot/vFCPSTRet";
+    case 40:
+        return "ICMSTot/vProd";
+    case 41:
+        return "ICMSTot/vFrete";
+    case 42:
+        return "ICMSTot/vSeg";
+    case 43:
+        return "ICMSTot/vDesc";
+    case 44:
+        return "ICMSTot/vII";
+    case 45:
+        return "ICMSTot/vIPI";
+    case 46:
+        return "ICMSTot/vIPIDevol";
+    case 47:
+        return "ICMSTot/vPIS";
+    case 48:
+        return "ICMSTot/vCOFINS";
+    case 49:
+        return "ICMSTot/vOutro";
+    case 50:
+        return "ICMSTot/vNF";
+    case 51:
+        return "ICMSTot/vTotTrib";
     default:
         return QString();
     }

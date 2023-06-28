@@ -8,6 +8,7 @@
 
 //TEMPORARIO
 #include <QThread>
+#include <QDebug>
 //TEMPORARIO
 
 class WorkerImportXML : public QObject{
