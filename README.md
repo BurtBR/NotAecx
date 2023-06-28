@@ -46,3 +46,26 @@ This program imports data about items from a very specific type of xml and enabl
   -	COFINSOutr/vBC
   -	COFINSOutr/pCOFINS
   -	COFINSOutr/vCOFINS
+  - ICMSTot/vBC
+  - ICMSTot/vICMS
+  - ICMSTot/vICMSDeson
+  - ICMSTot/vFCPUFDest
+  - ICMSTot/vICMSUFDest
+  - ICMSTot/vICMSUFRemet
+  - ICMSTot/vFCP
+  - ICMSTot/vBCST
+  - ICMSTot/vST
+  - ICMSTot/vFCPST
+  - ICMSTot/vFCPSTRet
+  - ICMSTot/vProd
+  - ICMSTot/vFrete
+  - ICMSTot/vSeg
+  - ICMSTot/vDesc
+  - ICMSTot/vII
+  - ICMSTot/vIPI
+  - ICMSTot/vIPIDevol
+  - ICMSTot/vPIS
+  - ICMSTot/vCOFINS
+  - ICMSTot/vOutro
+  - ICMSTot/vNF
+  - ICMSTot/vTotTrib
