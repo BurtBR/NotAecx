@@ -85,8 +85,6 @@ void MainWindow::OpenFiles(){
 
         isBusy = true;
         this->setDisabled(true);
-        tablesorting = ui->tableWidget->isSortingEnabled();
-        ui->tableWidget->setSortingEnabled(false);
 
         connect(worker, &WorkerImportXML::WorkerFinished, this, WorkerFinished);
         connect(worker, &WorkerImportXML::UpdateProgressBar, this, UpdateProgressBar);
@@ -312,10 +310,7 @@ void MainWindow::DisplayInfo(QString text){
     return;
 }
 
-void MainWindow::WorkerFinished(uint8_t workerid){
-
-    if(!workerid)
-        ui->tableWidget->setSortingEnabled(tablesorting);
+void MainWindow::WorkerFinished(uint8_t){
 
     KillThreads();
     isBusy = false;
