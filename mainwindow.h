@@ -46,13 +46,14 @@ private slots:
     void UpdateProgressBar(uint8_t value);
     void DisplayInfo(QString text);
     void WorkerFinished(uint8_t id);
+    void InsertData(int row, int column, QString data);
 
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
 signals:
-    void ImportXMLs(QStringList, QAbstractItemModel*);
+    void ImportXMLs(QStringList, int);
     void ExportCSV(QString, QAbstractItemModel*);
 };
 

@@ -89,6 +89,7 @@ void MainWindow::OpenFiles(){
         connect(worker, &WorkerImportXML::WorkerFinished, this, WorkerFinished);
         connect(worker, &WorkerImportXML::UpdateProgressBar, this, UpdateProgressBar);
         connect(worker, &WorkerImportXML::DisplayInfo, this, DisplayInfo);
+        connect(worker, &WorkerImportXML::InsertData, this, InsertData);
         connect(this, ImportXMLs, worker, &WorkerImportXML::ImportXMLs);
         connect(threadWork, &QThread::finished, worker, &WorkerImportXML::deleteLater);
 
@@ -99,7 +100,7 @@ void MainWindow::OpenFiles(){
         ui->progressBar->show();
         DisplayInfo("Importing...");
 
-        emit ImportXMLs(filepath, ui->tableWidget->model());
+        emit ImportXMLs(filepath, ui->tableWidget->rowCount());
     }
 }
 
@@ -316,4 +317,16 @@ void MainWindow::WorkerFinished(uint8_t){
     isBusy = false;
     this->setEnabled(true);
     ui->progressBar->hide();
+}
+
+void MainWindow::InsertData(int row, int column, QString data){
+
+    if(column >= ui->tableWidget->columnCount())
+        return;
+
+    if(row >= ui->tableWidget->rowCount()){
+        ui->tableWidget->insertRow(row);
+    }
+
+    ui->tableWidget->model()->setData(ui->tableWidget->model()->index(row, column), data);
 }

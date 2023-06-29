@@ -23,9 +23,9 @@ QDomElement WorkerImportXML::FindToken(QString tokenname, QDomElement node){
     return node.elementsByTagName(tokenname).at(0).toElement();
 }
 
-void WorkerImportXML::ImportXMLs(QStringList filelist, QAbstractItemModel *tablemodel){
+void WorkerImportXML::ImportXMLs(QStringList filelist, int rowcount){
 
-    int rowcount = tablemodel->rowCount(), columncount=1;
+    int columncount=1;
     int filecount = 0;
     QStringList nfedata;
 
@@ -77,53 +77,54 @@ void WorkerImportXML::ImportXMLs(QStringList filelist, QAbstractItemModel *table
 
         for(int i=0; i<items.size() ;i++){
 
-            tablemodel->insertRow(rowcount++);
             columncount = 0;
 
-            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), nfedata.at(0));
+            emit InsertData(rowcount, columncount++, nfedata.at(0));
 
             element = FindToken("prod", items.at(i).toElement());
 
-            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue("cProd", element));
-            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue("cEAN", element));
-            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue("xProd", element));
-            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue("NCM", element));
-            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue("CFOP", element));
-            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue("uCom", element));
-            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue("qCom", element).replace(".",","));
-            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue("vUnCom", element).replace(".",","));
-            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue("vProd", element).replace(".",","));
-            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue("cEANTrib", element));
-            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue("uTrib", element));
-            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue("qTrib", element).replace(".",","));
-            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue("vUnTrib", element).replace(".",","));
-            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue("indTot", element));
+            emit InsertData(rowcount, columncount++, FindNextValue("cProd", element));
+            emit InsertData(rowcount, columncount++, FindNextValue("cEAN", element));
+            emit InsertData(rowcount, columncount++, FindNextValue("xProd", element));
+            emit InsertData(rowcount, columncount++, FindNextValue("NCM", element));
+            emit InsertData(rowcount, columncount++, FindNextValue("CFOP", element));
+            emit InsertData(rowcount, columncount++, FindNextValue("uCom", element));
+            emit InsertData(rowcount, columncount++, FindNextValue("qCom", element).replace(".",","));
+            emit InsertData(rowcount, columncount++, FindNextValue("vUnCom", element).replace(".",","));
+            emit InsertData(rowcount, columncount++, FindNextValue("vProd", element).replace(".",","));
+            emit InsertData(rowcount, columncount++, FindNextValue("cEANTrib", element));
+            emit InsertData(rowcount, columncount++, FindNextValue("uTrib", element));
+            emit InsertData(rowcount, columncount++, FindNextValue("qTrib", element).replace(".",","));
+            emit InsertData(rowcount, columncount++, FindNextValue("vUnTrib", element).replace(".",","));
+            emit InsertData(rowcount, columncount++, FindNextValue("indTot", element));
 
             element = FindToken("imposto", items.at(i).toElement());
-            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue("vTotTrib", element).replace(".",","));
+            emit InsertData(rowcount, columncount++, FindNextValue("vTotTrib", element).replace(".",","));
 
             subelement = FindToken("ICMS", element);
-            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue("orig", subelement));
-            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue("CSOSN", subelement));
-            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue("vBCSTRet", subelement).replace(".",","));
-            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue("pST", subelement).replace(".",","));
-            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue("vICMSSTRet", subelement).replace(".",","));
+            emit InsertData(rowcount, columncount++, FindNextValue("orig", subelement));
+            emit InsertData(rowcount, columncount++, FindNextValue("CSOSN", subelement));
+            emit InsertData(rowcount, columncount++, FindNextValue("vBCSTRet", subelement).replace(".",","));
+            emit InsertData(rowcount, columncount++, FindNextValue("pST", subelement).replace(".",","));
+            emit InsertData(rowcount, columncount++, FindNextValue("vICMSSTRet", subelement).replace(".",","));
 
             subelement = FindToken("PIS", element);
-            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue("CST", subelement));
-            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue("vBC", subelement).replace(".",","));
-            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue("pPIS", subelement).replace(".",","));
-            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue("vPIS", subelement).replace(".",","));
+            emit InsertData(rowcount, columncount++, FindNextValue("CST", subelement));
+            emit InsertData(rowcount, columncount++, FindNextValue("vBC", subelement).replace(".",","));
+            emit InsertData(rowcount, columncount++, FindNextValue("pPIS", subelement).replace(".",","));
+            emit InsertData(rowcount, columncount++, FindNextValue("vPIS", subelement).replace(".",","));
 
             subelement = FindToken("COFINS", element);
-            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue("CST", subelement));
-            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue("vBC", subelement).replace(".",","));
-            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue("pCOFINS", subelement).replace(".",","));
-            tablemodel->setData(tablemodel->index(rowcount-1, columncount++), FindNextValue("vCOFINS", subelement).replace(".",","));
+            emit InsertData(rowcount, columncount++, FindNextValue("CST", subelement));
+            emit InsertData(rowcount, columncount++, FindNextValue("vBC", subelement).replace(".",","));
+            emit InsertData(rowcount, columncount++, FindNextValue("pCOFINS", subelement).replace(".",","));
+            emit InsertData(rowcount, columncount++, FindNextValue("vCOFINS", subelement).replace(".",","));
 
             //NFE Data
             for(int i=1; i<nfedata.size() ;i++)
-                tablemodel->setData(tablemodel->index(rowcount-1, columncount++), nfedata[i].replace(".",","));
+                emit InsertData(rowcount, columncount++, nfedata[i].replace(".",","));
+
+            rowcount++;
         }
         emit UpdateProgressBar(((filecount+1)*100.0)/filelist.size());
     }

@@ -9,6 +9,7 @@
 //TEMPORARIO
 #include <QThread>
 #include <QDebug>
+#include <QTableWidget>
 //TEMPORARIO
 
 class WorkerImportXML : public QObject{
@@ -25,12 +26,13 @@ public:
     WorkerImportXML(QObject *parent = nullptr);
 
 public slots:
-    void ImportXMLs(QStringList filelist, QAbstractItemModel *tablemodel);
+    void ImportXMLs(QStringList filelist, int rowcount);
 
 signals:
     void UpdateProgressBar(uint8_t value);
     void DisplayInfo(QString text);
     void WorkerFinished(uint8_t id);
+    void InsertData(int row, int column, QString data);
 
 };
 
