@@ -2,6 +2,7 @@
 #include "mainwindow.h"
 
 #include <QApplication>
+#include <QMessageBox>
 
 
 int main(int argc, char *argv[]){
@@ -10,13 +11,11 @@ int main(int argc, char *argv[]){
     MainWindow *window = nullptr;
     try{
         window = new MainWindow();
-    }catch(const char *error){
-        //DialogPopup(0, "Erro catastrófico, assim como em Chernobyl! " + QString(error)).exec();
-        return 0;
     }catch(...){
-        //DialogPopup(0, "Erro catastrófico, assim como em Chernobyl!").exec();
+        QMessageBox::critical(nullptr,"Error","Fail to open program");
         return 0;
     }
+    window->setWindowTitle("NotAecx v1.6.2");
     window->showMaximized();
     application.exec();
 
