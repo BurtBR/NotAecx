@@ -100,6 +100,8 @@ void MainWindow::OpenFiles(){
         ui->progressBar->show();
         DisplayInfo("Importing...");
 
+        ui->tableWidget->setSortingEnabled(false);
+
         emit ImportXMLs(filepath, ui->tableWidget->rowCount());
     }
 }
@@ -112,6 +114,7 @@ void MainWindow::Save(){
     if(!StartExportWorker())
         return;
 
+    ui->tableWidget->setSortingEnabled(false);
     emit ExportCSV(lastsavedfile, ui->tableWidget->model());
 }
 
@@ -123,6 +126,7 @@ void MainWindow::SaveAs(){
         if(!StartExportWorker())
             return;
 
+        ui->tableWidget->setSortingEnabled(false);
         lastsavedfile = filepath;
         emit ExportCSV(filepath, ui->tableWidget->model());
     }
@@ -317,6 +321,7 @@ void MainWindow::WorkerFinished(uint8_t){
     isBusy = false;
     this->setEnabled(true);
     ui->progressBar->hide();
+    ui->tableWidget->setSortingEnabled(true);
 }
 
 void MainWindow::InsertData(int row, int column, QString data){
